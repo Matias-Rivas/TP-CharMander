@@ -114,7 +114,11 @@ unsigned char* concatenarBloques(int*, int);
 int guardarDesdeBloque(int, void*, int, int);
 int actualizar(int, void*, size_t, uint64_t);
 int crearArchivo(int, const char*, osada_file_state);
+<<<<<<< HEAD
 int renombrarArchivo(int, char*);
+=======
+int renombrarArchivo(int,char*);
+>>>>>>> origin/renombrarArchivos
 
 
 
@@ -586,15 +590,27 @@ int renombrarArchivo(int archivo, char* nuevoNombre)
 	if(archivo<0)
 		return -1;
 
+<<<<<<< HEAD
 	if (strlen(nuevoNombre)>17)
 		return -2;
 
 	nombrarArchivo(archivo, nuevoNombre);
 	tablaArchivos[archivo].lastmod = time(NULL);
+=======
+	if (strlen(nuevoNombre)>16)
+		return -2;
+
+	strcpy(tablaArchivos[archivo].fname, nuevoNombre);
+
+>>>>>>> origin/renombrarArchivos
 	return 0;
 }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/renombrarArchivos
 void gestionarSocket(void* socket)
 {
 	int cliente = (int) socket;
@@ -605,6 +621,7 @@ void gestionarSocket(void* socket)
 	int archivo;
 	int dirPadre;
 	char* nombre;
+	char* nuevoNombre;
 	while(1)
 	{
 		buffer = malloc(2);
@@ -809,7 +826,7 @@ void gestionarSocket(void* socket)
 					}
 				}
 				else
-					memset(buffer, 1, 1);
+				memset(buffer, 1, 1);
 				send(cliente, buffer, 1, 0);
 				free(nombre);
 				free(buffer);
@@ -866,6 +883,7 @@ void gestionarSocket(void* socket)
 				break;
 
 		case COD_RENAME:
+<<<<<<< HEAD
 				archivo =obtenerArchivo((char*)buffer);
 				free(buffer);
 				buffer = malloc(1);
@@ -910,8 +928,44 @@ void gestionarSocket(void* socket)
 				break;
 		default: free(buffer);
 		}
+=======
+
+			archivo =obtenerArchivo((char*)buffer);
+			printf("archivo en servidor %s", (char*)buffer);
+			free(buffer);
+
+			buffer = malloc(17);
+			nuevoNombre = recv(cliente,buffer,17,0);
+			printf("nuevo nombre en servidor %s", (char*)buffer);
+
+			if (buffer<=0)
+			{
+					printf("Cliente %d desconectado.\n\n", cliente);
+					return;
+			}
+
+			if (strlen(nuevoNombre)>0 )
+			{	switch(renombrarArchivo(archivo,(char*)buffer))
+				{
+				case 0 : memset(buffer, 0, 1); break;
+				case -2 : memset(buffer, 2, 1); break;
+
+				}
+			}
+			else
+
+			memset(buffer, 1, 1);
+			send(cliente, buffer, 1, 0);
+
+			free(buffer);
+			break;
+			//nombre = obtenerNombreArchivo((char*)buffer);
+		}//switch (renombrarArchivo(nombre, nuevoNombre))
+>>>>>>> origin/renombrarArchivos
 		pthread_mutex_unlock(&sem_estructuras);
+
 	}
+
 	return;
 }
 
@@ -971,6 +1025,7 @@ int main(int argc, char** argv)
 	int fdmax;        // número máximo de descriptores de fichero
 	int listener;     // descriptor de socket a la escucha
 	int i;
+
 	pthread_t hilo;
 	pthread_attr_t atributo;
 	pthread_attr_init(&atributo);
@@ -1004,6 +1059,10 @@ int main(int argc, char** argv)
 					if (i == listener)
 					{
 						//ACEPTAMOS UN NUEVO CLIENTE
+<<<<<<< HEAD
+=======
+						//socket_addNewConnection lo que hace
+>>>>>>> origin/renombrarArchivos
 						int cliente = socket_addNewConection(listener,&master,&fdmax);
 						int retval = pthread_create(&hilo, &atributo, (void*)gestionarSocket, (void*) cliente);
 						if(!retval)
@@ -1011,10 +1070,12 @@ int main(int argc, char** argv)
 						else
 							printf("No se ha podido establecer la conexion con el cliente.Socket: %d\n", cliente);
 						//TODO revisar desconexion de cliente
+
 					}
 				}
 			}
 		}
+
 
 		return 0;
 }

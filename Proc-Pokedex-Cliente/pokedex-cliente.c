@@ -103,6 +103,40 @@ void enviarMensaje(char* mensaje)
 
 }
 
+<<<<<<< HEAD
+=======
+void enviarMensaje(char* mensaje)
+{
+	void* buffer;
+	buffer =malloc(17);
+	memset(buffer,0,17);
+	//int i =strlen(mensaje);
+	//int j=0;
+
+	if(strlen(mensaje)<=16){
+		memcpy((char*)buffer,mensaje,strlen(mensaje));
+	}
+
+/*
+	if (i<=16)
+	{
+		for(j=i;j<16;j++)
+		{
+			mensaje=strcat(mensaje,"\0");
+		}
+	}
+*/
+	//memcpy((char*)buffer,mensaje,17);
+
+	send(fd_server,buffer,17,0);
+printf("buffer cliente %s", (char*)buffer);
+
+	free(buffer);
+
+	return;
+
+}
+>>>>>>> origin/renombrarArchivos
 
 static int osada_getattr(const char *path, struct stat *stbuf)
 {
@@ -392,15 +426,26 @@ int osada_unlink(const char* path)
 	return retorno;
 }
 
+<<<<<<< HEAD
 
 int osada_rename (const char *path,char* nuevoPath)
+=======
+int osada_rename (const char *path,char* nuevoNombre)
+>>>>>>> origin/renombrarArchivos
 {
 	void* buffer;
 	int retorno = 0;
 	int res=0;
 
+<<<<<<< HEAD
 	enviarCodigoYPath(COD_RENAME, path);
 	enviarMensaje(nuevoPath);
+=======
+	printf("nuevo nombre %s",nuevoNombre);
+	enviarCodigoYTamanio(COD_RENAME, strlen(path)+1);
+	enviarPath(path);
+	enviarMensaje(nuevoNombre);
+>>>>>>> origin/renombrarArchivos
 
 	buffer = malloc(1);
 	if ((res = recv(fd_server, buffer, 1, 0))<=0)
@@ -409,11 +454,17 @@ int osada_rename (const char *path,char* nuevoPath)
 		retorno = -1;
 	}
 
+<<<<<<< HEAD
 	switch(((uint8_t*)buffer)[0])
 	{
 	case 1: retorno = -ENOENT; break;
 	case 2: retorno = -ENAMETOOLONG; break;
 	case 3: retorno = -EEXIST; break;
+=======
+	switch(((int*)buffer)[0])
+	{
+		case 2: retorno = -ENAMETOOLONG; break;
+>>>>>>> origin/renombrarArchivos
 	}
 
 	free(buffer);
